@@ -64,6 +64,22 @@ export default function Episode({ episode }: EpisodeProps) {
     )
 }
 
+/**
+ * Metodo obrigatorio para paginas estaticas que possuem parametros dinamicos
+ * 
+ * fallback = false - Nao gera a pagina estatica resultando em 404.
+ * 
+ * fallback = true - Se não existir a pagina estatica faz a chamada a API para obter os dados
+ * e gera a pagina estatica, porem a chamada a API é feita pelo lado do client (browser).
+ * Dependendo da requisição os dados podem não estar disponíveis no redirecionamento.
+ * Neste caso, podemos retornar um loading utilizando o hook useRouter. Exemplo:
+ * const router = useRouter();
+ * if (router.isFAllback) {return <p>Carregando...</p>}
+ * 
+ * fallback = 'blocking' - Faz a chamada a API pelo Node para obter os dados e gera a pagina 
+ * estatica mas só redireciona o usuario quando a requisição terminar. 
+ * 
+ */ 
 export const getStaticPaths: GetStaticPaths = async () => {
     return {
         paths: [],
@@ -71,7 +87,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     }
 }
 
-// SSG
+// ISG
 export const getStaticProps: GetStaticProps = async (ctx) => {
     const { slug } = ctx.params;
     const { data } = await api.get(`/episodes/${slug}`);
